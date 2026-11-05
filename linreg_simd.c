@@ -262,10 +262,11 @@ int main(void) {
     {
         int N = 100000, d = 32;
         double b1 = 0.0, b3 = 0.0;
-        int p = 1;
+        int ps[5] = {1, 2, 4, 8, 16};
         printf("\n=== 3.5 effect of threads: N=%d d=%d lambda=%g ===\n", N, d, LAMBDA);
         printf("%-8s %10s %8s %8s %14s %8s %8s\n", "threads", "openmp", "S", "E", "openmp+simd", "S", "E");
-        while (1) {
+        for (int i = 0; i < 5 && ps[i] <= P; i++) {
+            int p = ps[i];
             run(N, d, LAMBDA, K, p, t, f, dw, &z);
             if (p == 1) {
                 b1 = t[1];
@@ -273,9 +274,6 @@ int main(void) {
             }
             printf("%-8d %10.4f %8.2f %8.2f %14.4f %8.2f %8.2f\n",
                    p, t[1], b1 / t[1], b1 / t[1] / p, t[3], b3 / t[3], b3 / t[3] / p);
-            if (p == P) break;
-            p *= 2;
-            if (p > P) p = P;
         }
     }
 
